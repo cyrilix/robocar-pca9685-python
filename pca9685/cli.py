@@ -120,7 +120,7 @@ def execute_from_command_line():
         client = init_mqtt_steering_client(steering_controller=steering, broker_host=broker_host, user=user,
                                            password=password, client_id=client_id, steering_topic=topic)
     elif args["throttle"]:
-        throttle_pin = donkeycar.parts.pins.pwm_pin_by_id("PCA9685.0:40.7")
+        throttle_pin = donkeycar.parts.pins.pwm_pin_by_id(pin_id)
         controller = actuator.PulseController(throttle_pin)
         throttle = actuator.PWMThrottle(controller=controller, max_pulse=int(args["--max-pulse"]), min_pulse=int(args["--min-pulse"]),
                                         zero_pulse=int(args["--zero-pulse"]))
