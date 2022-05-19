@@ -32,6 +32,8 @@ setup(name='robocar-pca9685-python',
                         'protobuf3',
                         'google',
                         'adafruit-pca9685',
+                        'pigpio',
+                        'RPi.GPIO',
                         ],
       tests_require=tests_require,
       extras_require={
