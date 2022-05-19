@@ -13,7 +13,7 @@ Options:
 -p PASSWORD    --mqtt-password=PASSWORD                  MQTT password
 -b HOSTNAME    --mqtt-broker=HOSTNAME                    MQTT broker host
 -C CLIENT_ID   --mqtt-client-id=CLIENT_ID                MQTT client id
--t TOPIC       --mqtt-topic-camera=TOPIC                 MQTT topic where to read camera frames
+-t TOPIC       --mqtt-topic=TOPIC                        MQTT topic where to read instructions
 -b BUS         --i2c-bus=BUS                             I2C bus number
 -a ADDRESS     --i2c-address=ADDRESS                     I2C base address
 -c CHANNEL     --pca9685-channel=CHANNEL                 Device channel
@@ -109,7 +109,7 @@ def execute_from_command_line():
     topic = get_default_value(args["--mqtt-topic"], "MQTT_TOPIC", "/pca9685")
     i2c_bus = get_default_value(args["--i2c-bus"], "I2C_BUS", 0)
     i2c_address = get_default_value(args["--i2c-address"], "I2C_ADDRESS", 40)
-    pca9685_channel = get_default_value(args["--i2c-address"], "PCA9685_CHANNEL", 0)
+    pca9685_channel = get_default_value(args["--pca9685-channel"], "PCA9685_CHANNEL", 0)
 
     pin_id = "PCA9685.{bus}:{address}.{channel}".format(bus=i2c_bus, address=i2c_address,channel=pca9685_channel)
 
