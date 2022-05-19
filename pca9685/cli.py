@@ -25,6 +25,7 @@ Options:
 """
 import logging
 import os
+import signal, sys
 
 from docopt import docopt
 import paho.mqtt.client as mqtt
@@ -41,12 +42,22 @@ logging.basicConfig(level=logging.INFO)
 default_client_id = "robocar-pca9685-python"
 
 
+class SignalHandler:
+    def __init__(self, client: mqtt.Client):
+        self._client = client
+
+    def sigterm_handler(self, _signo, _stack_frame):
+        logger.info("exit on SIG_TERM")
+        self._client.disconnect()
+        sys.exit(0)
+
+
 def init_mqtt_steering_client(steering_controller: actuator.PWMSteering, broker_host: str, user: str, password: str, client_id: str,
                      steering_topic: str) -> mqtt.Client:
     logger.info("Start steering part")
     client = mqtt.Client(client_id=client_id, clean_session=True, userdata=None, protocol=mqtt.MQTTv311)
 
-    def on_connect(client, userdata, flags, rc):
+    def on_connect(client: mqtt.Client, userdata, flags, rc):
         logger.info("Register callback on topic %s", steering_topic)
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
@@ -58,7 +69,7 @@ def init_mqtt_steering_client(steering_controller: actuator.PWMSteering, broker_
             steering_msg.ParseFromString(msg.payload)
             steering_controller.run_threaded(steering_msg.Steering)
         except:
-            logger.debug("unexpected error: unable to process steering, skip message")
+            logger.error("unexpected error: unable to process steering, skip message")
 
     client.username_pw_set(user, password)
     client.on_connect = on_connect
@@ -86,7 +97,7 @@ def init_mqtt_throttle_client(throttle_controller: actuator.PWMThrottle, broker_
             throttle_msg.ParseFromString(msg.payload)
             throttle_controller.run_threaded(throttle_msg.Throttle)
         except:
-            logger.debug("unexpected error: unable to process throttle, skip message")
+            logger.error("unexpected error: unable to process throttle, skip message")
 
     client.username_pw_set(user, password)
     client.on_connect = on_connect
@@ -128,6 +139,9 @@ def execute_from_command_line():
                                            password=password, client_id=client_id, throttle_topic=topic)
     else:
         raise Exception('invalid mode selected, must be steering or throttle')
+
+    sh = SignalHandler(client)
+    signal.signal(signal.SIGTERM, sh.sigterm_handler)
 
     client.loop_forever()
 
