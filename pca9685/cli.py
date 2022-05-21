@@ -69,7 +69,7 @@ def init_mqtt_steering_client(steering_controller: actuator.PWMSteering, broker_
             steering_msg.ParseFromString(msg.payload)
             steering_controller.run_threaded(steering_msg.Steering)
         except:
-            logger.error("unexpected error: unable to process steering, skip message")
+            logger.exception("unexpected error: unable to process steering, skip message")
 
     client.username_pw_set(user, password)
     client.on_connect = on_connect
@@ -97,7 +97,7 @@ def init_mqtt_throttle_client(throttle_controller: actuator.PWMThrottle, broker_
             throttle_msg.ParseFromString(msg.payload)
             throttle_controller.run_threaded(throttle_msg.Throttle)
         except:
-            logger.error("unexpected error: unable to process throttle, skip message")
+            logger.exception("unexpected error: unable to process throttle, skip message")
 
     client.username_pw_set(user, password)
     client.on_connect = on_connect
