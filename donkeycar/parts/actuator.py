@@ -141,6 +141,7 @@ class PWMSteering:
         self.pulse = dk.utils.map_range(angle,
                                         self.LEFT_ANGLE, self.RIGHT_ANGLE,
                                         self.left_pulse, self.right_pulse)
+        logger.debug(f"new steering value {angle} -> {self.pulse}")
 
     def run(self, angle):
         self.run_threaded(angle)
@@ -197,6 +198,7 @@ class PWMThrottle:
         else:
             self.pulse = dk.utils.map_range(throttle, self.MIN_THROTTLE, 0,
                                             self.min_pulse, self.zero_pulse)
+        logger.debug(f"new steering value {throttle} -> {self.pulse}")
 
     def run(self, throttle):
         self.run_threaded(throttle)
