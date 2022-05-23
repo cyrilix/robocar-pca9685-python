@@ -5,7 +5,7 @@ Usage:
 rc-pca9685 [steering|throttle] [-u USERNAME | --mqtt-username=USERNAME] [--mqtt-password=PASSWORD] \
         [--mqtt-broker=HOSTNAME] [--mqtt-topic=TOPIC] [--mqtt-client-id=CLIENT_ID] [--i2c-bus=BUS] \
         [--i2c-address=ADDRESS] [--pca9685-channel=CHANNEL] [--left-pulse=LEFT_PULSE] [--right-pulse=RIGHT_PULSE] \
-        [--max-pulse=MAX_PULSE] [--min-pulse=MIN_PULSE] [--zero-pulse=ZEO_PULSE]
+        [--max-pulse=MAX_PULSE] [--min-pulse=MIN_PULSE] [--zero-pulse=ZEO_PULSE] [--debug]
 
 Options:
 -h --help                                                Show this screen.
@@ -22,6 +22,7 @@ Options:
 -M MAX_PULSE   --max-pulse=MAX_PULSE                     Max Pulse for throttle
 -m MIN_PULSE   --min-pulse=MIN_PULSE                     Min Pulse for throttle
 -z ZERO_PULE   --zero-pulse=ZEO_PULSE                    Zero Pulse for throttle
+-d --debug                                               Debug logging
 """
 import logging
 import os
@@ -121,6 +122,10 @@ def execute_from_command_line():
     i2c_bus = get_default_value(args["--i2c-bus"], "I2C_BUS", 0)
     i2c_address = get_default_value(args["--i2c-address"], "I2C_ADDRESS", 40)
     pca9685_channel = get_default_value(args["--pca9685-channel"], "PCA9685_CHANNEL", 0)
+
+    debug = bool(args["--debug"])
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
 
     pin_id = "PCA9685.{bus}:{address}.{channel}".format(bus=i2c_bus, address=i2c_address,channel=pca9685_channel)
 
